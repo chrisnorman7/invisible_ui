@@ -7,6 +7,7 @@ class Element(object):
  def __init__(self, title, help = 'Object usage instructions go here.'):
   """Set the title for this item."""
   self.type = 'Element'
+  self.value = None # Place-holder value for the editable controls.
   self.title = title
   self.help = help
   self.handled_keys = {pygame.K_F1: self.get_help} # The keydown messages this control responds to.
@@ -116,7 +117,7 @@ class Button(Element):
   """Action will be called when the enter key is pressed."""
   super(Button, self).__init__(title)
   self.type = 'Button'
-  self.help = 'Press enter to activate this button.'
+  self.help = 'Press enter or space to activate this button.'
   self.action = action
   self.handled_keys[pygame.K_RETURN] = self.action
   self.handled_keys[pygame.K_SPACE] = self.action
@@ -128,18 +129,37 @@ class Checkbox(Button):
   self.state = not self.state
   self.selected()
  
- def __init__(self, title, state = False, state_checked = 'checked', state_unchecked = 'unchecked'):
+ def __init__(self, title, value = False, state_checked = 'checked', state_unchecked = 'unchecked'):
   """Set the title and the initial state."""
   super(Checkbox, self).__init__(title, self.activate)
   self.type = 'Checkbox'
-  self.state = state
+  self.value = value
   self.state_checked = state_checked
   self.state_unchecked = state_unchecked
   self.help = 'Press enter or space to toggle the value.'
  
  def get_title(self):
-  """Get the title."""
-  return '%s %s' % (super(Checkbox, self).get_title(), self.state_checked if self.state else self.state_unchecked)
+  return '%s %s' % (super(Checkbox, self).get_title(), self.state_checked if self.value else self.state_unchecked)
+
+class Group(Button):
+ """Choose from a list of pre-defined values."""
+ def activate(self):
+  """Change the value."""
+  self.value += 1
+  if self.value >= len(self.values):
+   self.value = 0
+  ao2.speak(self.values[self.value])
+ 
+ def __init__(self, title, values, value = 0):
+  """Set the possible values for this control."""
+  super(Group, self).__init__(title, self.activate)
+  self.values = values
+  self.value = value
+  self.help = 'Press enter or space to change the value.'
+  self.type = 'Group'
+ 
+ def get_title(self):
+  return '%s (%s selected)' % (super(Group, self).get_title(), self.values[self.value])
 
 if __name__ == '__main__':
  """Run a little example."""
@@ -155,6 +175,7 @@ if __name__ == '__main__':
  m = Menu('Test')
  m.add_item(Label('This is a menu'))
  m.add_item(Checkbox('Debugging', state_checked = 'On', state_unchecked = 'Off'))
+ m.add_item(Group('Favourite chocolate', ['Dairy Milk', 'Galaxy', 'Bornville', 'Bounty']))
  m.add_item(Button('OK', lambda: ao2.speak('You pressed the OK button.')))
  m.add_item(Button('Cancel', do_quit))
  m.selected()
