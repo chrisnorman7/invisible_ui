@@ -6,13 +6,18 @@ class Element(object):
  """The object from which all elements are derived."""
  def __init__(self, title, help = 'Object usage instructions go here.'):
   """Set the title for this item."""
+  self.type = 'Element'
   self.title = title
   self.help = help
   self.handled_keys = {pygame.K_F1: self.get_help} # The keydown messages this control responds to.
  
+ def get_title(self):
+  """Get the title."""
+  return '%s %s' % (self.title, self.type)
+ 
  def selected(self):
   """This object has been selected."""
-  ao2.speak(self.title)
+  ao2.speak(self.get_title())
  
  def get_help(self):
   """Show help for this control."""
@@ -30,7 +35,8 @@ class Menu(Element):
  """A control which can be scrolledwith the arrow keys."""
  def __init__(self, title):
   """Give the title of the menu."""
-  super(Menu, self).__init__(title + ' menu')
+  super(Menu, self).__init__(title)
+  self.type = 'Menu'
   self._position = None # The user's position in the menu.
   self._items = []
   self.help = 'Use the arrow keys to move up and down in the menu.'
@@ -100,18 +106,40 @@ class Label(Element):
  """This element does nothing, and just acts as a header in menus ETC."""
  def __init__(self, title):
   """Set the title, and alter the help message."""
-  super(Label, self).__init__(title + ' label')
+  super(Label, self).__init__(title)
+  self.type = 'Label'
   self.help = 'This object has no controls.'
 
 class Button(Element):
  """Perform an action when the enter key is pressed."""
  def __init__(self, title, action):
   """Action will be called when the enter key is pressed."""
-  super(Button, self).__init__(title + ' button')
+  super(Button, self).__init__(title)
+  self.type = 'Button'
   self.help = 'Press enter to activate this button.'
   self.action = action
   self.handled_keys[pygame.K_RETURN] = self.action
   self.handled_keys[pygame.K_SPACE] = self.action
+
+class Checkbox(Button):
+ """A toggleable checkbox."""
+ def activate(self):
+  """Toggle the state."""
+  self.state = not self.state
+  self.selected()
+ 
+ def __init__(self, title, state = False, state_checked = 'checked', state_unchecked = 'unchecked'):
+  """Set the title and the initial state."""
+  super(Checkbox, self).__init__(title, self.activate)
+  self.type = 'Checkbox'
+  self.state = state
+  self.state_checked = state_checked
+  self.state_unchecked = state_unchecked
+  self.help = 'Press enter or space to toggle the value.'
+ 
+ def get_title(self):
+  """Get the title."""
+  return '%s %s' % (super(Checkbox, self).get_title(), self.state_checked if self.state else self.state_unchecked)
 
 if __name__ == '__main__':
  """Run a little example."""
@@ -126,6 +154,7 @@ if __name__ == '__main__':
  screen = pygame.display.set_mode()
  m = Menu('Test')
  m.add_item(Label('This is a menu'))
+ m.add_item(Checkbox('Debugging', state_checked = 'On', state_unchecked = 'Off'))
  m.add_item(Button('OK', lambda: ao2.speak('You pressed the OK button.')))
  m.add_item(Button('Cancel', do_quit))
  m.selected()
