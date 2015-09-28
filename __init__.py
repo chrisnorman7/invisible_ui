@@ -1,3 +1,4 @@
+# -*- coding: latin-1
 import pygame
 from accessible_output2.outputs.auto import Auto
 ao2 = Auto()
@@ -126,7 +127,7 @@ class Checkbox(Button):
  """A toggleable checkbox."""
  def activate(self):
   """Toggle the state."""
-  self.state = not self.state
+  self.value = not self.value
   self.selected()
  
  def __init__(self, title, value = False, state_checked = 'checked', state_unchecked = 'unchecked'):
@@ -161,6 +162,56 @@ class Group(Button):
  def get_title(self):
   return '%s (%s selected)' % (super(Group, self).get_title(), self.values[self.value])
 
+class Textbox(Element):
+ """An editable text box."""
+ def __init__(self, title, value = u'', hidden = False, allowed_chars = ur"""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890!"£$%^&*()[]{},.<>;:'@#~\|"""):
+  """If hidden is True then the characters will not be spoken as they are typed."""
+  super(Textbox, self).__init__(title)
+  self.value = value
+  self.hidden = hidden
+  self.allowed_chars = allowed_chars
+  self.type = 'Edit'
+  self.help = 'You can type into this field.'
+ 
+ def handle_event(self, event):
+  """Handle an event."""
+  if event.type == pygame.KEYDOWN:
+   v = event.unicode
+   if event.key == pygame.K_BACKSPACE:
+    if self.value:
+     v = self.value[-1]
+     if v == ' ':
+      v = 'space'
+     ao2.speak('Deleted %s' % v)
+     self.value = self.value[:-1]
+    else:
+     ao2.speak('No text to delete.')
+    return True
+   elif v in self.allowed_chars:
+    self.value += v
+    ao2.speak('space' if v == ' ' else v)
+    return True
+   else:
+    return False
+ 
+ def get_title(self):
+  return '%s %s' % (super(Textbox, self).get_title(), self.value)
+
+class Dialog(Menu):
+ """Contains a label and a dismiss button."""
+ def dismiss(self):
+  """Dismiss the dialog."""
+  ao2.speak('Dismiss.')
+ 
+ def __init__(self, title, message, button = None):
+  super(Dialog, self).__init__(title)
+  self.help = 'This is a dialog box.'
+  self.type = 'dialog'
+  self.add_item(Label(message))
+  if not button:
+   button = Button('OK', self.dismiss)
+  self.add_item(button)
+
 if __name__ == '__main__':
  """Run a little example."""
  running = 1 # Keep the loop alive.
@@ -171,14 +222,27 @@ if __name__ == '__main__':
   running = 0
   print('Exiting program.')
  
+ def g():
+  """Show the test dialog."""
+  class TestDialog(Dialog):
+   """Show this when the OK button is pressed."""
+   def dismiss(self):
+    import sys
+    sys.exit('Goodbye.')
+  global control
+  control = TestDialog('Test', 'You pressed the OK button.')
+  control.selected()
+ 
  screen = pygame.display.set_mode()
  m = Menu('Test')
  m.add_item(Label('This is a menu'))
+ m.add_item(Textbox('Name'))
  m.add_item(Checkbox('Debugging', state_checked = 'On', state_unchecked = 'Off'))
  m.add_item(Group('Favourite chocolate', ['Dairy Milk', 'Galaxy', 'Bornville', 'Bounty']))
- m.add_item(Button('OK', lambda: ao2.speak('You pressed the OK button.')))
+ m.add_item(Button('OK', g))
  m.add_item(Button('Cancel', do_quit))
  m.selected()
+ control = m
  while running:
   for e in pygame.event.get():
-   m.handle_event(e)
+   control.handle_event(e)
