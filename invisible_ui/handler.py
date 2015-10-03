@@ -4,7 +4,7 @@ from inspect import getdoc
 
 class Handler(object):
  """Event handler."""
- def __init__(self, session, type, params, func, docstring = None, always_active = False):
+ def __init__(self, session, type, params, func, always_active, docstring = None):
   """
   Create a new event handler.
   
@@ -16,9 +16,9 @@ class Handler(object):
   
   func - The function which should be called when this handler has been verified.
   
-  docstring - The docstring for func. If docstring is not specified, inspect.getdoc(func) will be used.
-  
   always_active - If True, this handler will be called even when the game is paused.
+  
+  docstring - The docstring for func. If docstring is not specified, inspect.getdoc(func) will be used.
   
   To call the provided function properly, use Handler.call_func(*args, **kwargs).
   """
@@ -26,8 +26,23 @@ class Handler(object):
   self.type = type
   self.params = params
   self.func = func
-  self.docstring = docstring
   self.always_active = always_active
+  self.docstring = docstring
+  self.session.logger.debug('Added Handler %s', self)
+ 
+ def __str__(self):
+  """Pretty-printing."""
+  return '<Handler: session = %s, type = %s, params = %s, func = %s, always_active = %s, docstring = %s>' % (
+   self.session,
+   self.type,
+   self.params,
+   self.func,
+   self.always_active,
+   self.docstring
+  )
+ 
+ def __repr__(self):
+  return str(self)
  
  def get_help(self):
   """Return help for self.func."""

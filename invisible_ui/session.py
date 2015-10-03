@@ -83,7 +83,7 @@ class Session(object):
    if handle:
     h.call_func()
  
- def add_handler(self, type, handler, docstring = None, **kwargs):
+ def add_handler(self, type, handler, always_active = False, docstring = None, **kwargs):
   """
   Add an event handler to be processed by this session.
   
@@ -92,6 +92,8 @@ class Session(object):
   handler - The function which should be called when an event matching this specification is received.
   
   docstring - See the documentation for Handler.__init__ for details.
+  
+  always_active - Specify whether or not this handler should be called even when the game is paused.
   
   kwargs - An arbitrary number of parameters which must be satisfied in order for the event to match.
   
@@ -102,7 +104,7 @@ class Session(object):
   session.add_handler(pygame.KEYDOWN, lambda: ao2.speak('You pressed the enter key.'), key = pygame.K_RETURN)
   """
   l = self._events.get(type, [])
-  h = Handler(self, type, kwargs, handler, docstring)
+  h = Handler(self, type, kwargs, handler, always_active, docstring)
   l.append(h)
   self._events[type] = l
   return h
@@ -121,7 +123,7 @@ class Session(object):
   except ValueError:
    return False
  
- def add_keydown(self, handler, **kwargs):
+ def add_keydown(self, handler, always_active = False, **kwargs):
   """
   Add a pygame.KEYDOWN event handler.
   
@@ -130,11 +132,11 @@ class Session(object):
   
   See the documentation for self.add_handler for examples.
   """
-  return self.add_handler(pygame.KEYDOWN, handler, **kwargs)
+  return self.add_handler(pygame.KEYDOWN, handler, always_active = always_active, **kwargs)
  
- def add_keyup(self, handler, **kwargs):
+ def add_keyup(self, handler, always_active = False, **kwargs):
   """See the documentation for self.add_keydown."""
-  return self.add_handler(pygame.KEYUP, handler, **kwargs)
+  return self.add_handler(pygame.KEYUP, handler, always_active = always_active, **kwargs)
  
  def do_pause(self, handler = None):
   """Pause the game by setting self.running to False."""
