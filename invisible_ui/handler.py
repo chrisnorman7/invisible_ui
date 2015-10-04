@@ -28,6 +28,7 @@ class Handler(object):
   self.func = func
   self.always_active = always_active
   self.docstring = docstring
+  self.event = None # Gets populated when called.
   self.session.logger.debug('Added Handler %s', self)
  
  def __str__(self):
@@ -51,7 +52,8 @@ class Handler(object):
   else:
    return getdoc(self.func)
  
- def call_func(self, *args, **kwargs):
-  """Call self.func."""
+ def call_func(self, event, *args, **kwargs):
+  """Call self.func after setting self.event."""
+  self.event = event
   if self.session.running or self.always_active:
    return self.func(self, *args, **kwargs)

@@ -81,7 +81,7 @@ class Session(object):
      handle = False
      break
    if handle:
-    h.call_func()
+    h.call_func(event)
  
  def add_handler(self, type, handler, always_active = False, docstring = None, **kwargs):
   """
