@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
  name = 'invisible_ui',
- version = '1.4',
+ version = '1.5',
  description = 'Accessible UI elements for pygame.',
  url = 'http://github.com/chrisnorman7/invisible_ui.git',
  author = 'Chris Norman',
