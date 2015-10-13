@@ -72,16 +72,13 @@ class Session(object):
  def handle_event(self, event):
   """Handle an event."""
   self.logger.debug('Handle event: %s.', event)
-  if self.control:
-   return self.control.handle_event(event)
-  for h in self._events.get(event.type, []):
-   handle = True # Innocent until proven guilty.
-   for k, v in h.params.items():
-    if getattr(event, k, v) != v:
-     handle = False
-     break
-   if handle:
-    h.call_func(event)
+  if not self.control or not self.control.handle_event(event): # If there isn't a control currently assigned or it doesn not know how to handle this event, carry on as normal.
+   for h in self._events.get(event.type, []):
+    for k, v in h.params.items():
+     if not v(getattr(event, k, v)):
+      break
+    else:
+     h.call_func(event)
  
  def add_handler(self, type, handler, always_active = False, docstring = None, **kwargs):
   """
@@ -95,7 +92,7 @@ class Session(object):
   
   always_active - Specify whether or not this handler should be called even when the game is paused.
   
-  kwargs - An arbitrary number of parameters which must be satisfied in order for the event to match.
+  kwargs - An arbitrary number of parameters which must be satisfied in order for the event to match. Each value for kwargs can optionally be a lambda which must evaluate to True in order for the match to work.
   
   Example:
   

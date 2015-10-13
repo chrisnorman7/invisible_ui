@@ -44,10 +44,13 @@ class Menu(Element):
   if event.type == pygame.KEYDOWN:
    if event.key == pygame.K_UP:
     self.do_up()
+    return True
    elif event.key == pygame.K_DOWN:
     self.do_down()
+    return True
    elif event.key == pygame.K_ESCAPE:
     cancel(self.session)
+    return True
    else:
     c = self.get_current_control()
     if c:

@@ -12,7 +12,7 @@ class Handler(object):
   
   type - The type of this handler.
   
-  params - A dictionary containing parameters the calling event must conform to in order to succeed.
+  params - A dictionary containing parameters the calling event must conform to in order to succeed. The values of this dictionary can either be simple values or lambdas. In the case of simple values, each value will be turned into a lambda of the form lambda against, actual = value: against == value.
   
   func - The function which should be called when this handler has been verified.
   
@@ -24,7 +24,12 @@ class Handler(object):
   """
   self.session = session
   self.type = type
-  self.params = params
+  self.params = {}
+  for k, v in params.items():
+   if callable(v):
+    self.params[k] = v
+   else:
+    self.params[k] = lambda value, actual = v: value == actual
   self.func = func
   self.always_active = always_active
   self.docstring = docstring
