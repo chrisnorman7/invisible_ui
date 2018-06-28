@@ -1,6 +1,6 @@
 """Checkbox class."""
 
-from .button import Button
+from invisible_ui.elements.button import Button
 
 
 class Checkbox(Button):
@@ -9,7 +9,7 @@ class Checkbox(Button):
     def __init__(self, title, value=False, state_checked='checked',
                  state_unchecked='unchecked'):
         """Set the title and the initial state."""
-        super(Checkbox, self).__init__(title, self.activate)
+        super().__init__(title, self.activate)
         self.type = 'Checkbox'
         self.value = value
         self.state_checked = state_checked

@@ -1,7 +1,7 @@
 """Group class."""
 
-from .button import Button
-from . import ao2
+from invisible_ui.elements.button import Button
+from invisible_ui.elements import ao2
 
 
 class Group(Button):
@@ -9,7 +9,7 @@ class Group(Button):
 
     def __init__(self, title, values, value=0):
         """Set the possible values for this control."""
-        super(Group, self).__init__(title, self.activate)
+        super().__init__(title, self.activate)
         if len(values):
             self.values = values
         else:

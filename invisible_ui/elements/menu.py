@@ -2,7 +2,7 @@
 
 import pygame
 
-from . import cancel, Element
+from invisible_ui.elements import cancel, Element
 
 
 class Menu(Element):
@@ -18,7 +18,7 @@ class Menu(Element):
 
         autoselect - Automatically run self.selected when created.
         """
-        super(Menu, self).__init__(title)
+        super().__init__(title)
         self.type = 'Menu'
         self.session = session
         self._position = -1  # The user's position in the menu.

@@ -5,7 +5,7 @@ import sys
 
 import pygame
 
-from handler import Handler
+from invisible_ui.handler import Handler
 
 
 class Session(object):

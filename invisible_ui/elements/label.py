@@ -1,6 +1,6 @@
 """Label class."""
 
-from . import Element
+from invisible_ui.elements import Element
 
 
 class Label(Element):
@@ -8,7 +8,7 @@ class Label(Element):
 
     def __init__(self, title):
         """Set the title, and alter the help message."""
-        super(Label, self).__init__(title)
+        super().__init__(title)
         self.type = 'Label'
         self.help = 'This object has no controls.'
 

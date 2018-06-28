@@ -1,19 +1,17 @@
-# -*-coding: latin-1
-
 """Textbox class."""
 
 import pygame
 
-from . import Element, ao2
+from invisible_ui.elements import Element, ao2
 
 
 class Textbox(Element):
     """An editable text box."""
 
     def __init__(self, title, value=u'', hidden=False,
-                 allowed_chars=ur"""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890!"£$%^&*()[]{},.<>;:'@#~\|/?-_=+`¬"""):
+                 allowed_chars=r"""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890!"$%^&*()[]{},.<>;:'@#~\|/?-_=+`"""):
         """If hidden is True then the characters will not be spoken as they are typed."""
-        super(Textbox, self).__init__(title)
+        super().__init__(title)
         self.value = value
         self.hidden = hidden
         self.allowed_chars = allowed_chars

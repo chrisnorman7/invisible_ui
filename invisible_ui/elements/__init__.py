@@ -46,10 +46,10 @@ class Element(object):
         return False
 
 
-from button import Button
-from checkbox import Checkbox
-from dialog import Dialog
-from group import Group
-from label import Label
-from menu import Menu
-from textbox import Textbox
+from invisible_ui.elements.button import Button
+from invisible_ui.elements.checkbox import Checkbox
+from invisible_ui.elements.dialog import Dialog
+from invisible_ui.elements.group import Group
+from invisible_ui.elements.label import Label
+from invisible_ui.elements.menu import Menu
+from invisible_ui.elements.textbox import Textbox
