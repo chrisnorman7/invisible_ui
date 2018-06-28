@@ -13,7 +13,7 @@ setup(
     name=n,
     version="1.6",
     description="Accessible UI elements for pygame.",
-    url="http://github.com/chrisnorman7/invisible_ui.git",
+    url="http://github.com/tbreitenfeldt/invisible_ui.git",
     author="TJ Breitenfeldt and Chris Norman",
     author_email="timothyjb310@gmail.com",
     license="GPL",
