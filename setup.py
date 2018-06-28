@@ -11,7 +11,7 @@ for f in os.listdir(n):
 
 setup(
     name=n,
-    version="1.5",
+    version="1.6",
     description="Accessible UI elements for pygame.",
     url="http://github.com/chrisnorman7/invisible_ui.git",
     author="TJ Breitenfeldt and Chris Norman",
