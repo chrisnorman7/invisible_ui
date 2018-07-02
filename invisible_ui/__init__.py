@@ -9,3 +9,5 @@ To use this package, either subclass or instanciate invisible_ui.session.Session
 
 If you wish to simply use the UI elements, read the documentation in invisible_ui.elements.* and invisible_ui.xtras.*
 """
+
+from invisible_ui.session import Session

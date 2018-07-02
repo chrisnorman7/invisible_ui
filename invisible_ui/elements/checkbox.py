@@ -6,10 +6,10 @@ from invisible_ui.elements.button import Button
 class Checkbox(Button):
     """A toggleable checkbox."""
 
-    def __init__(self, title, value=False, state_checked='checked',
+    def __init__(self, parent, title, value=False, state_checked='checked',
                  state_unchecked='unchecked'):
         """Set the title and the initial state."""
-        super().__init__(title, self.activate)
+        super().__init__(parent, title, self.activate)
         self.type = 'Checkbox'
         self.value = value
         self.state_checked = state_checked

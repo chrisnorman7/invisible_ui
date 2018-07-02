@@ -2,29 +2,30 @@
 
 import pygame
 
-from invisible_ui.elements import cancel, Element
+from invisible_ui.elements import cancel
+from invisible_ui.elements.element import Element
 
 
 class Menu(Element):
     """A control which can be scrolled with the arrow keys."""
 
-    def __init__(self, session, title, autoselect=True):
+    def __init__(self, parent, title, autoselect=True):
         """
         Instanciate a menu.
 
-        session - The session to attach this menu to.
+        parent - The parent object to attach this menu to.
 
         title - The title of the menu.
 
         autoselect - Automatically run self.selected when created.
         """
-        super().__init__(title)
+        super().__init__(parent, title)
         self.type = 'Menu'
-        self.session = session
+        self.parent = parent
         self._position = -1  # The user's position in the menu.
         self._items = []
         self.help = 'Use the arrow keys to move up and down in the menu and escape to exit.'
-        session.control = self
+        parent.control = self
         if autoselect:
             self.selected()
 
@@ -53,7 +54,7 @@ class Menu(Element):
                 self.do_down()
                 return True
             elif event.key == pygame.K_ESCAPE:
-                cancel(self.session)
+                cancel(self.parent)
                 return True
             else:
                 c = self.get_current_control()

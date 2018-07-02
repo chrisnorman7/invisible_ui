@@ -1,0 +1,12 @@
+create eventManager and inherit from it for all classes that handle events, session and elements.
+replace all instances of accessible_output2.outputs.auto.Auto.speak with accessible_output2.outputs.auto.Auto.output, to provide more functionallity. If the screenreader running can output braille, it will in adition to speaking.
+change session event_handle condition such that if control is not None, it will still check the sessions events 
+change Element so that it inherits from EventManager and remove the existing key dictionary. 
+Modify event_handler in Element so that it is udilizing the inherited EventManager instance variable self._events.
+move class element into a module of its own, and set ao2 = Auto() as an instance variable to be inherited from subclasses.
+set default code for abstract method EventManager.handle_event such that any events can be handled correctly just by calling EventManager's implementation of the method. It is still an abstract method though to insure that child classes have a correct behavior for handling events.
+rename xtras package to extras. 
+rename all modules such that they are using camel case rather than snakecase for prefered style of naming.
+Modify example.py such that it is using alt+f4 using a lambda expression, to close the application rather than q.
+Rewrite the helpMenu module.
+Make several small minor changes.

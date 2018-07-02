@@ -11,8 +11,12 @@ for f in os.listdir(n):
 
 setup(
     name=n,
-    version="1.6",
+    version="2.0",
     description="Accessible UI elements for pygame.",
+    long_description=("This provides an accessible invisible user interface library for developers to be able to create UI environments for screenreaders. Note that there are "
+                      "no graphics used, it is simply a meta concept using pygame and accessible_output2 to give the illusion that the screenreader is navigating through a "
+                      " user interface. SAPI is used as the default screenreader for windows if a known screenreader is not loaded. Further testing needs to be done to "
+                      "confirm compatibility on other platforms."),
     url="http://github.com/tbreitenfeldt/invisible_ui.git",
     author="TJ Breitenfeldt and Chris Norman",
     author_email="timothyjb310@gmail.com",
@@ -28,11 +32,11 @@ setup(
         "accessible_output",
         "spoken",
         "menu",
-        "element"],
-    install_requires=[
-        "pygame"
+        "element"
     ],
-    dependency_links=[
-        "hg+http://hg.q-continuum.net/accessible_output2#egg=accessible_output2"
-    ]
+    install_requires=[
+        "pygame",
+        "accessible_output2"
+    ],
+    python_requires=">=3"
 )
