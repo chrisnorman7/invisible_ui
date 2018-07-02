@@ -11,7 +11,7 @@ for f in os.listdir(n):
 
 setup(
     name=n,
-    version="2.0",
+    version="2.1",
     description="Accessible UI elements for pygame.",
     long_description=("This provides an accessible invisible user interface library for developers to be able to create UI environments for screenreaders. Note that there are "
                       "no graphics used, it is simply a meta concept using pygame and accessible_output2 to give the illusion that the screenreader is navigating through a "

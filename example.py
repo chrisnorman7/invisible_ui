@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
         def __init__(self):
             super().__init__()
-            self.add_keydown(self.do_quit, key=pygame.K_F4, mod=(lambda v: v == pygame.KMOD_LALT or v == pygame.KMOD_RALT))
+            self.add_keydown(self.quit, key=pygame.K_F4, mod=(lambda v: v == pygame.KMOD_LALT or v == pygame.KMOD_RALT))
             self.control = ExampleMenu(self)
 
 

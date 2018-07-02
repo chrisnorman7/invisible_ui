@@ -46,7 +46,7 @@ class Session(EventManager):
         self._events = {}
         self._control = None  # handle events through this object first.
         self.running = True  # While True, the game will continue.
-        self.add_handler(pygame.QUIT, self.do_quit)
+        self.add_handler(pygame.QUIT, self.quit)
 
     def main_loop(self):
         """Runs the main game loop."""
@@ -79,7 +79,7 @@ class Session(EventManager):
 
         self._control = e
 
-    def do_quit(self, event, func=None):
+    def quit(self, event, func=None):
         """Quit the game, and call the handler function passed in if is not None"""
         if func is not None:
             func(event)
@@ -88,12 +88,12 @@ class Session(EventManager):
         pygame.quit()
         sys.exit()
 
-    def do_pause(self, handler=None):
+    def pause(self, handler=None):
         """Pause the game by setting self.running to False."""
         self.running = False
         self.logger.debug("Paused.")
 
-    def do_unpause(self, handler=None):
+    def unpause(self, handler=None):
         """Unpause the game by setting self.running to True."""
         self.running = True
         self.logger.debug("Unpaused.")
@@ -101,6 +101,6 @@ class Session(EventManager):
     def toggle_paused(self, handler=None):
         """Toggles the paused state of the game."""
         if self.running:
-            self.do_pause()
+            self.pause()
         else:
-            self.do_unpause()
+            self.unpause()
