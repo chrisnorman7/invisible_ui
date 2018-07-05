@@ -13,6 +13,5 @@ class Button(Element):
         super().__init__(parent, title)
         self.help = "Press enter or space to activate this button."
         self.type = "button"
-        self.add_keydown(action, key=pygame.K_RETURN)
-        self.add_keydown(action, key=pygame.K_SPACE)
 
+        self.activateActionHandler = self.add_keydown(action, key=(lambda v: v ==pygame.K_RETURN or v == pygame.K_SPACE))

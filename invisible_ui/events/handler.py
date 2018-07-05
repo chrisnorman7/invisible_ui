@@ -7,7 +7,7 @@ class Handler(object):
     """Event handler. The data class that stores the event and action."""
 
     def __init__(self, handlerSource, type, params, func,
-                 always_active, docstring=None):
+                 docstring=None):
         """
         Create a new event handler.
 
@@ -20,8 +20,6 @@ class Handler(object):
 
         func - The function which should be called when this handler has been verified.
 
-        always_active - If True, this handler will be called even when the game is paused.
-
         docstring - The docstring for func. If docstring is not specified, inspect.getdoc(func) will be used.
 
         To call the provided function properly, use Handler.call_func(*args, **kwargs).
@@ -30,7 +28,6 @@ class Handler(object):
         self.type = type
         self.params = {}
         self.func = func
-        self.always_active = always_active
         self.docstring = docstring
         self.event = None  # Gets populated when called.
         self.handlerSource.logger.debug("Added Handler {!s}".format(self))
@@ -55,12 +52,11 @@ class Handler(object):
 
     def __str__(self):
         """Return the data for this handler for testing."""
-        return "<Handler: handlerSource = {0!s}, type = {1}, params = {2!s}, func = {3}, always_active = {4}, docstring = {5}>".format(
+        return "<Handler: handlerSource = {0!s}, type = {1}, params = {2!s}, func = {3}, docstring = {4}>".format(
             self.handlerSource,
             self.type,
             self.params,
             self.func,
-            self.always_active,
             self.docstring
         )
 

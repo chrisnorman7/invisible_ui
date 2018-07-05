@@ -18,13 +18,13 @@ class Textbox(Element):
         self._cursor = 0
 
         # bind actions to key events 
+        self.deleteCharHandler = self.add_keydown(self.delete_char, key=pygame.K_BACKSPACE)
+        self.nextCharHandler = self.add_keydown(self.next_char, key=pygame.K_RIGHT)
+        self.previousCharHandler = self.add_keydown(self.previous_char, key=pygame.K_LEFT)
+        self.getValueHandler = self.add_keydown(self.get_value, key=(lambda v: v == pygame.K_UP or v == pygame.K_DOWN))
+        self.setHomeHandler = self.add_keydown(self.set_home, key=pygame.K_HOME)
+        self.setEndHandler = self.add_keydown(self.set_end, key=pygame.K_END)
         self.add_keydown(self.type_char, unicode=(lambda v, allowedChars=self._allowedChars: v != "" and v in allowedChars))
-        self.add_keydown(self.delete_char, key=pygame.K_BACKSPACE)
-        self.add_keydown(self.next_char, key=pygame.K_RIGHT)
-        self.add_keydown(self.previous_char, key=pygame.K_LEFT)
-        self.add_keydown(self.get_value, key=(lambda v: v == pygame.K_UP or v == pygame.K_DOWN))
-        self.add_keydown(self.set_home, key=pygame.K_HOME)
-        self.add_keydown(self.set_end, key=pygame.K_END)
 
     def set_cursor(self, index):
         v = ""

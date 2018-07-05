@@ -1,9 +1,9 @@
 """Dialog class."""
 
-from invisible_ui.elements.menu import Menu
+from invisible_ui.elements.list import List
 
 
-class Dialog(Menu):
+class Dialog(List):
     """Contains a label and a dismiss button."""
 
     def __init__(self, parent, title, message, button=None):

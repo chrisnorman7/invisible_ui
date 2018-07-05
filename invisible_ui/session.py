@@ -57,12 +57,13 @@ class Session(EventManager):
             self.step()
             pygame.time.wait(5)
 
+    # Override
     def handle_event(self, event):
         """Handle an event."""
-        if self.control is not None:
-            self.control.handle_event(event)
+        if         super().handle_event(event):
+            return True
 
-        return super().handle_event(event)
+        return self._control is not None and             self._control.handle_event(event)
 
     def step(self):
         """Method to be overwritten, to be called at the end of each iteration of the main loop."""
