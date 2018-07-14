@@ -11,18 +11,18 @@ from invisible_ui.events import EventManager
 class Element(EventManager):
     """The object from which all elements are derived."""
 
-    def __init__(self, parent, title, help="Object usage instructions go here."):
-        """Set the title and help for this item."""
-        super().__init__()
+    def __init__(self, parent, title, type, logger=None, help="Object usage instructions go here."):
+        """Set the title, type, logger, and help for this item."""
+        super().__init__(logger)
 
         if not isinstance(parent, EventManager):
-            raise TypeError("Parent must be of type session or Element")
+            raise TypeError("Parent must be of type EventManager")
 
         self.parent = parent
         self.title = title
         self.help = help
         self.ao2 = Auto()
-        self._type = ""
+        self._type = type
 
     @property
     def type(self):
@@ -34,10 +34,8 @@ class Element(EventManager):
             raise ValueError("You can not set the type for any element to an empty string.")
 
         self._type = type
-        self.logger = logging.getLogger(type)
 
     def get_title(self):
-
         """Get the title."""
         return "{0} {1}".format(self.title, self.type)
 

@@ -24,9 +24,9 @@ class EventManager(ABC):
     add_keyup - Adds a keyup event to be handled by the session.
     """
 
-    def __init__(self):
+    def __init__(self, logger=None):
         self._events = {}
-        self._logger = None
+        self._logger = logger
 
     @abstractmethod
     def handle_event(self, event):
@@ -48,7 +48,7 @@ class EventManager(ABC):
                 if not v(getattr(event, k, v)):
                     break
             else:
-                h.call_func(event)
+                h.call_actions(event)
                 if self._logger is not None:
                     self._logger.debug("Handle event: {}.".format(event))
 
@@ -64,9 +64,6 @@ class EventManager(ABC):
     @property
     def logger(self):
         """Return the curreunt logger if it is not None."""
-        if self._logger == None:
-            raise ValueError("Logger can not be None, set the type first, which will automatically set the logger.")
-
         return self._logger
 
     @logger.setter
@@ -77,17 +74,18 @@ class EventManager(ABC):
 
         self._logger = logger
 
-    def add_handler(self, type, func, docstring=None, **kwargs):
+    def add_handler(self, type, actions, **kwargs):
         """
         Add an event handler to be processed by this session.
 
         type - The type of the event (pygame.QUIT, pygame.KEYUP ETC).
 
-        func- The method which should be called when an event matching this specification is received.
-
-        docstring - See the documentation for Handler.__init__ for details.
+        actions - The methods which should be called when an event matching this specification is received.
+        more than one action can be tied to a single event. This allows for secondary actions to occur along side already existing actions such as the down errow in the List.
+        You can either pass the actions or action as a single parameter or as a list.
 
         kwargs - An arbitrary number of parameters which must be satisfied in order for the event to match.
+        The keywords are directly matched with the instance variables found in the current event
         Each value for kwargs can optionally be a lambda which must evaluate to True in order for the match to work.
 
         Example:
@@ -97,7 +95,7 @@ class EventManager(ABC):
         session.add_handler(pygame.KEYDOWN, lambda: ao2.speak("You pressed the enter key."), key = pygame.K_RETURN)
         """
         l = self._events.get(type, [])
-        h = Handler(self, type, kwargs, func, docstring)
+        h = Handler(self, type, kwargs, actions)
         l.append(h)
         self._events[type] = l
         return h
@@ -116,31 +114,52 @@ class EventManager(ABC):
         except ValueError:
             return False
 
-    def add_keydown(self, handler, docstring=None, **kwargs):
+    def add_keydown(self, actions, **kwargs):
         """
         Add a pygame.KEYDOWN event handler.
 
-        handler - The method to be called when this key is pressed.
-
-        docstring - the documentation on what this key action does
+        actions - The methods to be called when this key is pressed.
 
         kwargs - The kwargs to be passed to self.add_handler.
 
         See the documentation for self.add_handler for examples.
         """
-        return self.add_handler(pygame.KEYDOWN, handler, docstring=docstring, **kwargs)
+        return self.add_handler(pygame.KEYDOWN, actions, **kwargs)
 
-    def add_keyup(self, handler, docstring=None, **kwargs):
+    def add_keyup(self, actions, **kwargs):
         """See the documentation for self.add_keydown."""
-        return self.add_handler(pygame.KEYUP, handler, docstring=docstring, **kwargs)
+        return self.add_handler(pygame.KEYUP, actions, **kwargs)
 
-    def change_event(self, handler, **kwargs):
+    def change_event_params(self, handler, **kwargs):
+        """
+        This allows the client to change the parameters for an event, in the case that there is a desire for slightly different behavior, such as reasigning keys.
+
+        handler - the handler object that the desired changes are made to.
+
+        kwargs - the variable number of keyword arguments for the parameters that must match the properties of the corresponding event.
+            """
         if not isinstance(handler, Handler):
             raise TypeError("given object must be of type Handler.")
         if not self.remove_handler(handler):
             raise ValueError("You must pass in a valid handler that already exists.")
 
-        self.add_handler(handler.type, handler.func, handler.docstring, **kwargs)
+        self.add_handler(handler.type, handler.actions, **kwargs)
+        self.event = handler.event
+
+    def change_event_actions(self, handler, actions):
+        """
+        This allows the client to change the actions for an event, in the case that there is a desire for slightly different behavior, such as reasigning keys.
+
+        handler - the handler object that the desired changes are made to.
+
+        actions - The methods that are called when this handler is varified against the current event.
+            """
+        if not isinstance(handler, Handler):
+            raise TypeError("given object must be of type Handler.")
+        if not self.remove_handler(handler):
+            raise ValueError("You must pass in a valid handler that already exists.")
+
+        self.add_handler(handler.type, actions, handler.params)
         self.event = handler.event
 
     # Override

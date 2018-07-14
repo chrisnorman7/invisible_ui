@@ -11,3 +11,4 @@ If you wish to simply use the UI elements, read the documentation in invisible_u
 """
 
 from invisible_ui.session import Session
+from invisible_ui.window import Window

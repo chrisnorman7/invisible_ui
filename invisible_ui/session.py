@@ -6,7 +6,7 @@ import sys
 import pygame
 
 from invisible_ui.events import EventManager
-from invisible_ui.elements.element import Element
+from invisible_ui.window import Window
 
 
 class Session(EventManager):
@@ -17,21 +17,21 @@ class Session(EventManager):
     main_loop - Main game loop.
 
     step - A method to be called with no arguments, and run after each iteration through the events from pygame.event.get().
+    This method is meant to be overritten, it is stubbed out by default.
+
+    on_exit - a method that is called right before program execution has finished.
+    This method is meant to be overritten, it is stubbed out by default.
 
     handle_event - overwritten method from EventManager, handles all events caught by main_loop.
 
-    do_quit - A factory method which by default is bound to the pygame.QUIT event.
+    quit - A factory method which will stop the main loop and end the program naturally.
 
-    do_pause - A method which pauses the game.
+    stop_loop - A method which stops the main loop .
 
-    do_unpause - A method which unpauses the game.
-
-    toggle_pause - Toggle the state of self.running, calling self.do_pause and self.do_unpause as appropriate.
+    resume_loop - A method which resumes the main loop.
 
     Public properties:
     control - If this is not None, session.handle_event will pass any event received to self.control.handle_event(event).
-
-    logger = The logger to which all tracebacks will be logged.
 
     running - If False, the game will be paused. Instead of setting this property manually, use the do_pause and do_unpause methods.
 
@@ -41,12 +41,9 @@ class Session(EventManager):
 
     def __init__(self):
         """Initialise a new Session object."""
-        super().__init__()
-        self.logger = logging.getLogger("invisible_ui.Session")
-        self._events = {}
+        super().__init__(logging.getLogger("invisible_ui.Session"))
         self._control = None  # handle events through this object first.
-        self.running = True  # While True, the game will continue.
-        self.add_handler(pygame.QUIT, self.quit)
+        self._running = True  # While True, the game will continue.
 
     def main_loop(self):
         """Runs the main game loop."""
@@ -60,13 +57,17 @@ class Session(EventManager):
     # Override
     def handle_event(self, event):
         """Handle an event."""
-        if         super().handle_event(event):
+        if self._control is not None and             self._control.handle_event(event):
             return True
 
-        return self._control is not None and             self._control.handle_event(event)
+        return super().handle_event(event)
 
     def step(self):
         """Method to be overwritten, to be called at the end of each iteration of the main loop."""
+        pass
+
+    def on_exit(self):
+        """Method to be overwritten, to be called at the end of program execution write before the program naturally ends."""
         pass
 
     @property
@@ -74,34 +75,24 @@ class Session(EventManager):
         return self._control
 
     @control.setter
-    def control(self, e):
-        if not isinstance(e, EventManager) and e is not None:
-            raise TypeError("Control can only point at objects of type Element.")
+    def control(self, w):
+        if not isinstance(w, Window):
+            raise TypeError("Session.control can only point at objects of type Window.")
 
-        self._control = e
+        self._control = w
 
-    def quit(self, event, func=None):
-        """Quit the game, and call the handler function passed in if is not None"""
-        if func is not None:
-            func(event)
-
+    def quit(self, event):
+        """Quit the game."""
         self.logger.info("Quitting.")
-        pygame.quit()
+        self.on_exit()
         sys.exit()
 
-    def pause(self, handler=None):
-        """Pause the game by setting self.running to False."""
-        self.running = False
-        self.logger.debug("Paused.")
+    def stop_loop(self):
+        """Pause the game by setting self._running to False."""
+        self._running = False
+        self.logger.debug("stop loop.")
 
-    def unpause(self, handler=None):
-        """Unpause the game by setting self.running to True."""
-        self.running = True
-        self.logger.debug("Unpaused.")
-
-    def toggle_paused(self, handler=None):
-        """Toggles the paused state of the game."""
-        if self.running:
-            self.pause()
-        else:
-            self.unpause()
+    def resume_loop(self):
+        """Unpause the game by setting self._running to True."""
+        self._running = True
+        self.logger.debug("Resumed loop.")

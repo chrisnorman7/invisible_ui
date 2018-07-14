@@ -1,0 +1,5 @@
+removed docstring from handlers
+created and implemented the IContainer interface for all classes that can contain other objects. Window, List, and Dialog all implement IContainer.
+Setup handler actions so that it is possible to bind more than one action to a handler. This allows the client to add behavior to existing behavior without having to rewrite code, or override methods.
+
+Made several other small changes.

@@ -1,16 +1,5 @@
 """Element classes."""
 
-from accessible_output2.outputs.auto import Auto
-
-
-def cancel(parentElement, message='Canceled.'):
-    """Perform a cancel."""
-    ao2 = Auto()
-    parentElement.control = None
-
-    if message:
-        ao2.output(message)
-
 
 from invisible_ui.elements.button import Button
 from invisible_ui.elements.checkbox import Checkbox

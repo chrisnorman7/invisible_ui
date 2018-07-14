@@ -1,4 +1,6 @@
 
+import logging
+
 import pygame
 
 from invisible_ui.elements.element import Element
@@ -6,16 +8,16 @@ from invisible_ui.elements.element import Element
 
 class Textbox(Element):
 
-    def __init__(self, parent, title, value="", hidden = False,
-            allowedChars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890!\"$\%^&*()[]{},.<>;:\'@#~\\|/?-_=+`"):
-        super().__init__(parent, title)
+    def __init__(self, parent, title, action=None, value="", hidden=False,
+            allowedChars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890!\"$\%^&*()[]{},.<>;:\'@#~\\|/?-_=+`",
+            help="You can type into this field."):
+        super().__init__(parent, title, "Edit", logger=logging.getLogger("Textbox"), help=help)
         
-        self.help = "You can type into this field."
-        self.type = "Edit"
         self._hidden = hidden
         self._value = value
         self._allowedChars = allowedChars
         self._cursor = 0
+        self._action = action
 
         # bind actions to key events 
         self.deleteCharHandler = self.add_keydown(self.delete_char, key=pygame.K_BACKSPACE)
@@ -24,6 +26,7 @@ class Textbox(Element):
         self.getValueHandler = self.add_keydown(self.get_value, key=(lambda v: v == pygame.K_UP or v == pygame.K_DOWN))
         self.setHomeHandler = self.add_keydown(self.set_home, key=pygame.K_HOME)
         self.setEndHandler = self.add_keydown(self.set_end, key=pygame.K_END)
+        self.activateActionHandler = self.add_keydown(self.call_action, key=pygame.K_RETURN)
         self.add_keydown(self.type_char, unicode=(lambda v, allowedChars=self._allowedChars: v != "" and v in allowedChars))
 
     def set_cursor(self, index):
@@ -127,6 +130,10 @@ class Textbox(Element):
     def get_value(self, event):
         self.ao2.output(self._value, interrupt=True)
 
+    @property
+    def value(self):
+        return self._value
+
     # override
     def get_title(self):
         if self._hidden:
@@ -136,6 +143,6 @@ class Textbox(Element):
 
         return "{0} {1}".format(super().get_title(), self._value)
 
-    @property
-    def value(self):
-        return self._value
+    def call_action(self, event):
+        if self._action is not None:
+            self._action(event)

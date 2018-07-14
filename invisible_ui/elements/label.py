@@ -1,5 +1,7 @@
 """Label class."""
 
+import logging
+
 from invisible_ui.elements.element import Element
 
 
@@ -8,10 +10,10 @@ class Label(Element):
 
     def __init__(self, parent, title):
         """Set the title, and alter the help message."""
-        super().__init__(parent, title)
-        self.type = 'Label'
-        self.help = 'This object has no controls.'
+        super().__init__(parent, title, "Label", logger=logging.getLogger("Label"))
+        self.type = "Label"
+        self.help = "This object has no controls."
 
     def get_title(self):
         """Get the title."""
-        return '%s' % (self.title)
+        return "{}".format(self.title)

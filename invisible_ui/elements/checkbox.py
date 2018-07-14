@@ -1,5 +1,7 @@
 """Checkbox class."""
 
+import logging
+
 from invisible_ui.elements.button import Button
 
 
@@ -10,12 +12,13 @@ class Checkbox(Button):
         """Set the title and the initial state."""
         super().__init__(parent, title, self.activate)
         self.type = "Checkbox"
+        self.logger = logging.getLogger("Checkbox")
         self.value = value
         self.stateChecked = stateChecked
         self.stateUnchecked = stateUnchecked
         self.help = "Press enter or space to toggle the value."
 
-    def activate(self):
+    def activate(self, event):
         """Toggle the state."""
         self.value = not self.value
         self.selected()
